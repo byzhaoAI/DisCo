@@ -48,7 +48,29 @@ Accepted by **Information Sciences** on Apr.16, 2026.
 Please refer to the [INSTALL.md](./INSTALL.md) for detailed documentations. 
 
 
-## Train the Disco  model
+## About the checkpoints and its performance
+You can download our trained checkpoints from the [[HuggingFace]]() or [[OneDrive]](). The checkpoints contain the following configurations of collaborative perception:
+- `liftsplat (OPV2V)`, `second (OPV2V)`, `pillar (OPV2V&DAIR-V2X)`, `pillar&liftsplat (OPV2V&DAIR-V2X)`, `second&unprojection (DAIR-V2X)`: Base collaborative perception networks of homogeneous encodings
+
+- `p + s / s + p (OPV2V)`: Collaborative perception networks of `pillar` and `second` encodings
+- `s + pl / pl + s (OPV2V)`: Collaborative perception networks of `second` and `pillar&liftsplat` encodings
+- `p + pl / pl + p (DAIR-V2X)` : Collaborative perception networks of `pillar` and `pillar&liftsplat` encodings
+- `pl + su / su + pl (DAIR-V2X)`: Collaborative perception networks of `pillar&liftsplat` and `second&unprojection` encodings
+
+Due to differences in hardware architectures (e.g., different GPU types), CUDA/cuDNN versions, and floating-point precision, the numerical results may vary across different machines. The results of the checkpoints were generated using the following server setup:
+
+|||
+|-|-|
+| **System** | Ubuntu 20.04.6 LTS |
+| **GPU** | NVIDIA RTX-4090 24G |
+| **CUDA Version**| 12.2 (Global/System), 11.1 (Environment/For project) |
+| **NVIDIA Driver** | 535.230.02 |
+| **System Memory (RAM)** | 256 GB |
+| **cuDNN** | 8005 |
+
+For other software setup, please refer to [rnvironment.yml](./environment.yml).
+
+## Train the Disco model
 The setting is same as OpenCOOD, which uses yaml file to configure all the parameters for training. To train your own model from scratch or a continued checkpoint, run the following commonds:
 ```python
 python opencood/tools/train.py --hypes_yaml ${CONFIG_FILE} [--model_dir  ${CHECKPOINT_FOLDER}]
@@ -79,10 +101,10 @@ For example, to train the collaboration between `pointpillar + liftsplat(Agent1)
 python opencood/tools/train_disco.py --hypes_yaml opencood/hypes_yaml/dair-v2x/hetero/dair_disco_pl+su.yaml
 ```
 
-Specify the following parameters first before training:
+Specify the following parameters before training:
 - `origin_hypes`: for loading encoder weights.
 - `model_path`: for loading encoder weights.
-- `origin_fusion_uid`: loading the agent id in training stage 1. Often `a1`.
+- `origin_fusion_uid`: loading the agent id in training stage 1. Often `a1` (*i.e.*, ego agent).
 - `fusion_mode`: support `implicit` and `explicit`, which are the designs of DisCo.
 - `freeze_fusion` Freeze each encoding networks. Need to set as `True`.
 - `fusion_channel`: Should be consistent between encoding modules and collabotation modules.

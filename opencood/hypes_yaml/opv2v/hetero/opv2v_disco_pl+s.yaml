@@ -1,4 +1,4 @@
-name: opv2v_disco_pl+s_noSE_noBP
+name: opv2v_disco_pl+s
 root_dir: '/mnt/OPV2V/train'
 validate_dir: '/mnt/OPV2V/validate'
 
@@ -150,8 +150,8 @@ model:
           img_downsample: 2
           bev_dim: 64
         
-        origin_hypes: 'opencood/hypes_yaml/disco/opv2v/multimodal/opv2v_disco_pillar_liftsplat.yaml'
-        model_path: 'opencood/logs/disco_finals/base_homo/opv2v_disco_pillar_liftsplat_2024_10_25_15_13_40'
+        origin_hypes: 'opencood/hypes_yaml/disco/opv2v/multimodal/opv2v_multi_pillar_liftsplat.yaml'
+        model_path: 'opencood/logs/opv2v_multi_pillar_liftsplat_2024_10_25_15_13_40'
         fusion_channel: 64
         fusion_mode: 'implicit'
         origin_fusion_uid: 'a1'
@@ -171,8 +171,8 @@ model:
           backbone_3d:
             num_features_out: 32 # 64/2
         
-        origin_hypes: 'opencood/hypes_yaml/disco/opv2v/single/opv2v_disco_second.yaml'
-        model_path: 'opencood/logs/disco_finals/base_homo/opv2v_disco_second_2024_10_21_05_12_40'
+        origin_hypes: 'opencood/hypes_yaml/opv2v/single/opv2v_single_second.yaml'
+        model_path: 'opencood/logs/opv2v_single_second_2024_10_21_05_12_40'
 
 
     shrink_header:

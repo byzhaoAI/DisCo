@@ -147,8 +147,8 @@ model:
           point_pillar_scatter:
             num_features: 64
 
-        origin_hypes: 'opencood/hypes_yaml/disco/dair-v2x/single/dair_disco_pillar.yaml'
-        model_path: 'opencood/logs/disco_finals/base_homo/dair_disco_pillar_2024_10_13_02_25_12'
+        origin_hypes: 'opencood/hypes_yaml/disco/dair-v2x/single/dair_single_pillar.yaml'
+        model_path: 'opencood/logs/dair_single_pillar_2024_10_13_02_25_12'
 
       a2:
         m1:
@@ -174,9 +174,8 @@ model:
           img_downsample: 1
           bev_dim: 64
         
-        origin_hypes: 'opencood/hypes_yaml/disco/dair-v2x/multimodal/dair_disco_pillar_liftsplat.yaml'
-        # model_path: 'opencood/logs/disco_finals/base_homo/dair_disco_pillar_liftsplat_2024_10_25_22_38_16'
-        model_path: 'opencood/logs/dair_disco_pillar_liftsplat_noMFI_2024_11_05_17_50_04'
+        origin_hypes: 'opencood/hypes_yaml/dair-v2x/multimodal/dair_multi_pillar_liftsplat.yaml'
+        model_path: 'opencood/logs/dair_multi_pillar_liftsplat_2024_10_25_22_38_16'
         fusion_channel: 64
         fusion_mode: 'explicit'
         origin_fusion_uid: 'a1'

@@ -7,7 +7,7 @@ test_dir: "/mnt/DAIR-V2X/cooperative-vehicle-infrastructure/val.json"
 yaml_parser: "load_hetero_params"
 train_params:
   batch_size: &batch_size 2 #4 #6
-  epoches: 25
+  epoches: 30
   eval_freq: 5
   save_freq: 1
   max_cav: &max_cav 2
@@ -141,7 +141,6 @@ model:
           img_downsample: 1
           bev_dim: 64
         
-        # model_path: 'opencood/logs/dair_disco_base_2024_09_15_16_21_32/'
         fusion_channel: 64
         fusion_mode: 'explicit'
 

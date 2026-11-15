@@ -136,7 +136,6 @@ model:
           img_downsample: 2
           bev_dim: 64
         
-        # model_path: 'opencood/logs/dair_disco_base_2024_09_15_16_21_32/'
         fusion_channel: 64
         fusion_mode: 'implicit'
 

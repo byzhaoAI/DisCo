@@ -6,9 +6,9 @@ yaml_parser: "load_hetero_params"
 train_params:
   batch_size: &batch_size 2
   epoches: &epoches 20
-  eval_freq: 2
+  eval_freq: 5
   save_freq: 1
-  max_cav: &max_cav 5
+  max_cav: &max_cav 2
 
 device: &device cuda
 

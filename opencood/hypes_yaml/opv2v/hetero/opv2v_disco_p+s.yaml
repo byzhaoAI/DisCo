@@ -1,10 +1,10 @@
-name: opv2v_disco_p+s_cos_noSE_noBP
+name: opv2v_disco_p+s
 root_dir: '/mnt/OPV2V/train'
 validate_dir: '/mnt/OPV2V/validate'
 
 yaml_parser: "load_hetero_params"
 train_params:
-  batch_size: &batch_size 1
+  batch_size: &batch_size 2
   epoches: 5
   eval_freq: 5
   save_freq: 1
@@ -141,8 +141,8 @@ model:
           point_pillar_scatter:
             num_features: 64
 
-        origin_hypes: 'opencood/hypes_yaml/disco/opv2v/single/opv2v_disco_pillar.yaml'
-        model_path: 'opencood/logs/disco_finals/base_homo/opv2v_disco_pillar_2024_10_20_22_58_04'
+        origin_hypes: 'opencood/hypes_yaml/opv2v/single/opv2v_single_pillar.yaml'
+        model_path: 'opencood/logs/opv2v_single_pillar_2026_11_09_04_04_42'
 
 
       a2:
@@ -158,8 +158,8 @@ model:
           backbone_3d:
             num_features_out: 32 # 64/2
         
-        origin_hypes: 'opencood/hypes_yaml/disco/opv2v/single/opv2v_disco_second.yaml'
-        model_path: 'opencood/logs/disco_finals/base_homo/opv2v_disco_second_2024_10_21_05_12_40'
+        origin_hypes: 'opencood/hypes_yaml/opv2v/single/opv2v_single_second.yaml'
+        model_path: 'opencood/logs/opv2v_single_second_2026_11_12_09_26_50'
 
 
     shrink_header:
