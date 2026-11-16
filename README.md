@@ -68,7 +68,7 @@ Due to differences in hardware architectures (e.g., different GPU types), CUDA/c
 | **System Memory (RAM)** | 256 GB |
 | **cuDNN** | 8005 |
 
-For other software setup, please refer to [rnvironment.yml](./environment.yml).
+For other software setup, please refer to [environment.yml](./environment.yml).
 
 ## Train the Disco model
 The setting is same as OpenCOOD, which uses yaml file to configure all the parameters for training. To train your own model from scratch or a continued checkpoint, run the following commonds:
@@ -84,12 +84,12 @@ an early fusion model which utilizes SECOND as the backbone. See [Tutorial 1: Co
 Train each networks who participates the collaboration. They are located in `single` and `multimodal` of `opencood/hypes_yaml/opv2v` and `opencood/hypes_yaml/dair-v2x`.
 
 For example, to train `pointpillar` on OPV2V from scratch:
-```
+```python
 python opencood/tools/train.py --hypes_yaml opencood/hypes_yaml/opv2v/opv2v_single_pillar.yaml
 ```
 
 To train `pointpillar + liftsplat` on DAIR-V2X from scratch:
-```
+```python
 python opencood/tools/train.py --hypes_yaml opencood/hypes_yaml/dair-v2x/multimodal/dair_multi_pillar_liftsplat.yaml
 ```
 
@@ -97,7 +97,7 @@ python opencood/tools/train.py --hypes_yaml opencood/hypes_yaml/dair-v2x/multimo
 Train the networks collaborated by different encoding methods.
 
 For example, to train the collaboration between `pointpillar + liftsplat(Agent1)` + `second + unprojection (Agent2)` on DAIR-V2X from scratch:
-```
+```python
 python opencood/tools/train_disco.py --hypes_yaml opencood/hypes_yaml/dair-v2x/hetero/dair_disco_pl+su.yaml
 ```
 

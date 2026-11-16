@@ -70,7 +70,7 @@ def main():
     elif 'dair' in opt.model_dir:
         from opencood.utils import eval_utils_where2comm as eval_utils
         hypes['validate_dir'] = hypes['test_dir']
-        left_hand = False
+        left_hand = True # False
 
     else:
         print(f"The path should contain one of the following strings [opv2v|dair] .")
@@ -139,13 +139,13 @@ def main():
             elif opt.fusion_method == 'early':
                 pred_box_tensor, pred_score, gt_box_tensor = inference_utils.inference_early_fusion(batch_data, model, opencood_dataset)
             elif opt.fusion_method == 'intermediate':
-                if 'vqm' in hypes['name'] or 'emb' in hypes['name']:
+                if 'disco' in hypes['name']:
                     mode = [int(ele) for ele in opt.modality.split(',')]
                     pred_box_tensor, pred_score, pred_dbev, gt_box_tensor = inference_utils.inference_early_fusion(batch_data, model, opencood_dataset, modality_index=opt.inference_single, mode=mode)
                 else:
                     pred_box_tensor, pred_score, pred_dbev, gt_box_tensor = inference_utils.inference_intermediate_fusion(batch_data, model, opencood_dataset)
             elif opt.fusion_method == 'no':
-                if 'vqm' in hypes['name']:
+                if 'disco' in hypes['name']:
                     output_dict_ego = {}
                     output_dict_ego['ego'] = model(batch_data['ego'])
                     pred_box_tensor, pred_score, pred_dbev, gt_box_tensor = opencood_dataset.post_process_no_fusion(batch_data, output_dict_ego)
