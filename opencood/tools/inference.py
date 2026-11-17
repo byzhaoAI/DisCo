@@ -139,13 +139,13 @@ def main():
             elif opt.fusion_method == 'early':
                 pred_box_tensor, pred_score, gt_box_tensor = inference_utils.inference_early_fusion(batch_data, model, opencood_dataset)
             elif opt.fusion_method == 'intermediate':
-                if 'disco' in hypes['name']:
+                if 'disco' in hypes['model']['core_method']:
                     mode = [int(ele) for ele in opt.modality.split(',')]
                     pred_box_tensor, pred_score, pred_dbev, gt_box_tensor = inference_utils.inference_early_fusion(batch_data, model, opencood_dataset, modality_index=opt.inference_single, mode=mode)
                 else:
                     pred_box_tensor, pred_score, pred_dbev, gt_box_tensor = inference_utils.inference_intermediate_fusion(batch_data, model, opencood_dataset)
             elif opt.fusion_method == 'no':
-                if 'disco' in hypes['name']:
+                if 'disco' in hypes['model']['core_method']:
                     output_dict_ego = {}
                     output_dict_ego['ego'] = model(batch_data['ego'])
                     pred_box_tensor, pred_score, pred_dbev, gt_box_tensor = opencood_dataset.post_process_no_fusion(batch_data, output_dict_ego)

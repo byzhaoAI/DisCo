@@ -48,8 +48,8 @@ Accepted by **Information Sciences** on Apr.16, 2026.
 Please refer to the [INSTALL.md](./INSTALL.md) for detailed documentations. 
 
 
-## About the checkpoints and its performance
-You can download our trained checkpoints from the [[HuggingFace]]() or [[OneDrive]](). The checkpoints contain the following configurations of collaborative perception:
+<!-- ## About the checkpoints and its performance
+Our trained checkpoints can be downloaded from the [[HuggingFace]]() or [[OneDrive]](). The checkpoints contain the following configurations of collaborative perception:
 - `liftsplat (OPV2V)`, `second (OPV2V)`, `pillar (OPV2V&DAIR-V2X)`, `pillar&liftsplat (OPV2V&DAIR-V2X)`, `second&unprojection (DAIR-V2X)`: Base collaborative perception networks of homogeneous encodings
 
 - `p + s / s + p (OPV2V)`: Collaborative perception networks of `pillar` and `second` encodings
@@ -68,7 +68,7 @@ Due to differences in hardware architectures (e.g., different GPU types), CUDA/c
 | **System Memory (RAM)** | 256 GB |
 | **cuDNN** | 8005 |
 
-For other software setup, please refer to [environment.yml](./environment.yml).
+For other software setup, please refer to [environment.yml](./environment.yml). -->
 
 ## Train the Disco model
 The setting is same as OpenCOOD, which uses yaml file to configure all the parameters for training. To train your own model from scratch or a continued checkpoint, run the following commonds:
