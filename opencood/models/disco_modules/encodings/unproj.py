@@ -12,12 +12,11 @@ from opencood.models.disco_modules.utils import basic, vox, geom
 class Unprojection(nn.Module):  
     def __init__(self, args, device):
         super(Unprojection, self).__init__()
-        self.grid_conf = args['grid_conf']   # 网格配置参数
-        self.data_aug_conf = args['data_aug_conf']   # 数据增强配置参数
-        self.downsample = args['img_downsample']  # 下采样倍数
-        self.bevC = args['bev_dim']  # 图像特征维度
+        self.grid_conf = args['grid_conf']
+        self.data_aug_conf = args['data_aug_conf']
+        self.downsample = args['img_downsample']
+        self.bevC = args['bev_dim']
         
-        # 用于投影到BEV视角的参数
         voxels_size = torch.LongTensor([int((row[1] - row[0]) / row[2] + 0.5) for row in [self.grid_conf['xbound'], self.grid_conf['ybound'], self.grid_conf['zbound']]])
         self.X = voxels_size[0]  # 256
         self.Y = voxels_size[1]  # 256

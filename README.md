@@ -9,7 +9,7 @@ Accepted by **Information Sciences** on Apr.16, 2026.
 
 
 ## Updates
-- 2026/XX/XX Release the trained weights (Coming soon).
+- 2026/11/17 Release the trained weights.
 - 2026/11/12 Release the code.
 - 2026/04/14 Create project.
 
@@ -48,8 +48,8 @@ Accepted by **Information Sciences** on Apr.16, 2026.
 Please refer to the [INSTALL.md](./INSTALL.md) for detailed documentations. 
 
 
-<!-- ## About the checkpoints and its performance
-Our trained checkpoints can be downloaded from the [[HuggingFace]]() or [[OneDrive]](). The checkpoints contain the following configurations of collaborative perception:
+## About the checkpoints and its performance
+The trained checkpoints can be downloaded from the [[HuggingFace]](https://huggingface.co/byzhaoAI/DisCo) or [[GoogleDrive]](https://drive.google.com/drive/folders/1IbO3IaUNWJxgt1W_yM752KDmgqlXoMhT?usp=sharing). The checkpoints contain the following configurations of collaborative perception:
 - `liftsplat (OPV2V)`, `second (OPV2V)`, `pillar (OPV2V&DAIR-V2X)`, `pillar&liftsplat (OPV2V&DAIR-V2X)`, `second&unprojection (DAIR-V2X)`: Base collaborative perception networks of homogeneous encodings
 
 - `p + s / s + p (OPV2V)`: Collaborative perception networks of `pillar` and `second` encodings
@@ -57,18 +57,7 @@ Our trained checkpoints can be downloaded from the [[HuggingFace]]() or [[OneDri
 - `p + pl / pl + p (DAIR-V2X)` : Collaborative perception networks of `pillar` and `pillar&liftsplat` encodings
 - `pl + su / su + pl (DAIR-V2X)`: Collaborative perception networks of `pillar&liftsplat` and `second&unprojection` encodings
 
-Due to differences in hardware architectures (e.g., different GPU types), CUDA/cuDNN versions, and floating-point precision, the numerical results may vary across different machines. The results of the checkpoints were generated using the following server setup:
-
-|||
-|-|-|
-| **System** | Ubuntu 20.04.6 LTS |
-| **GPU** | NVIDIA RTX-4090 24G |
-| **CUDA Version**| 12.2 (Global/System), 11.1 (Environment/For project) |
-| **NVIDIA Driver** | 535.230.02 |
-| **System Memory (RAM)** | 256 GB |
-| **cuDNN** | 8005 |
-
-For other software setup, please refer to [environment.yml](./environment.yml). -->
+Due to differences in hardware architectures (e.g., different GPU types), CUDA/cuDNN versions, and floating-point precision, the numerical results may vary across different machines (maybe just slightly).
 
 ## Train the Disco model
 The setting is same as OpenCOOD, which uses yaml file to configure all the parameters for training. To train your own model from scratch or a continued checkpoint, run the following commonds:
@@ -122,6 +111,20 @@ Arguments Explanation:
 - `save_vis`: bool. Wether to save the visualization result.
 
 The evaluation results  will be dumped in the model directory.
+
+
+## Citation
+If you are using our project for your research, please cite the following paper:
+```
+@article{zhao2026facilitating,
+  title={Facilitating heterogeneous sensor information cooperation in multi-agent perception system},
+  author={Zhao, Binyu and Zhang, Wei and Zou, Zhaonian},
+  journal={Information Sciences},
+  pages={123529},
+  year={2026},
+  publisher={Elsevier}
+}
+```
 
 
 ## Acknowledgements

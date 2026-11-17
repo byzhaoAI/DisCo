@@ -150,7 +150,7 @@ model:
           img_downsample: 2
           bev_dim: 64
         
-        origin_hypes: 'opencood/hypes_yaml/disco/opv2v/multimodal/opv2v_multi_pillar_liftsplat.yaml'
+        origin_hypes: 'opencood/hypes_yaml/opv2v/multimodal/opv2v_multi_pillar_liftsplat.yaml'
         model_path: 'opencood/logs/opv2v_multi_pillar_liftsplat_2024_10_25_15_13_40'
         fusion_channel: 64
         fusion_mode: 'implicit'

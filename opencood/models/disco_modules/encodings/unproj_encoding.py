@@ -12,12 +12,12 @@ class Up(nn.Module):
         super().__init__()
 
         self.up = nn.Upsample(scale_factor=scale_factor, mode='bilinear',
-                              align_corners=True)  # 上采样 BxCxHxW->BxCx2Hx2W
+                              align_corners=True)  # BxCxHxW->BxCx2Hx2W
 
         self.conv = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, bias=False),
             nn.BatchNorm2d(out_channels),
-            #nn.ReLU(inplace=True),  # inplace=True使用原地操作，节省内存
+            #nn.ReLU(inplace=True),
             #nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1, bias=False),
             #nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True)
@@ -36,22 +36,22 @@ class Up(nn.Module):
         x = torch.cat([x2, x1], dim=1)
         return self.conv(x)
 
-        #x1 = self.up(x1)  # 对x1进行上采样
-        #x1 = torch.cat([x2, x1], dim=1)  # 将x1和x2 concat 在一起
+        #x1 = self.up(x1)
+        #x1 = torch.cat([x2, x1], dim=1)
         #return self.conv(x1)
 
 
-class CamEncode(nn.Module):  # 提取图像特征进行图像编码
+class CamEncode(nn.Module):
     def __init__(self, C, downsample):
         super(CamEncode, self).__init__()
         self.C = C  # 64
         self.downsample = downsample
         self.chain_channels = 128 # 256 # 512
 
-        self.trunk = EfficientNet.from_pretrained("efficientnet-b0")  # 使用 efficientnet 提取特征
+        self.trunk = EfficientNet.from_pretrained("efficientnet-b0")
         print("Number of parameter EfficientNet: %d" % (sum([param.nelement() for param in self.trunk.parameters()])))
 
-        self.up1 = Up(320+112, self.chain_channels)  # 上采样模块，输入输出通道分别为320+112和512
+        self.up1 = Up(320+112, self.chain_channels)
         if downsample <= 8:
             self.up2 = Up(self.chain_channels+40, self.chain_channels)
         if downsample <= 4:
@@ -63,7 +63,7 @@ class CamEncode(nn.Module):  # 提取图像特征进行图像编码
 
         self.image_head = nn.Conv2d(self.chain_channels, self.C, kernel_size=1, padding=0)
 
-    def get_eff_features(self, x):  # 使用efficientnet提取特征
+    def get_eff_features(self, x):
         # adapted from https://github.com/lukemelas/EfficientNet-PyTorch/blob/master/efficientnet_pytorch/model.py#L231
         endpoints = dict()
 
@@ -83,7 +83,7 @@ class CamEncode(nn.Module):  # 提取图像特征进行图像编码
 
         # Head
         endpoints['reduction_{}'.format(len(endpoints)+1)] = x  # x: 24 x 320 x 4 x 11
-        x = self.up1(endpoints['reduction_5'], endpoints['reduction_4'])  # 先对endpoints[4]进行上采样，然后将 endpoints[5]和endpoints[4] concat 在一起
+        x = self.up1(endpoints['reduction_5'], endpoints['reduction_4'])
         if self.downsample <= 8:
             x = self.up2(x, endpoints['reduction_3'])
         if self.downsample <= 4:

@@ -98,7 +98,7 @@ class MultiModalFusion(nn.Module):
         )
 
     def forward(self, feats, training):
-        # 模态融合 img, pc, radar: B*C*Y*X
+        # modal fusion. img, pc, radar: B*C*Y*X
 
         con_feat = torch.stack(feats, dim=1)
         B, M, C, H, W = con_feat.shape
@@ -160,41 +160,25 @@ class ModalFusionBlock(nn.Module):
         self.mode = mode
         if mode in ['explicit', 'implicit']:
             self.fusion = MultiModalFusion(dim, mode)
-        elif mode in ['mce']:
-            self.fusion = MCEBlock(dim, modality_num)
         else:
             self.fusion = nn.Conv2d(dim*modality_num, dim, kernel_size=1)
 
-    def forward(self, modal_features, mode=[1,1], training=True):
+    def forward(self, modal_features, mode=[0,1], training=True):
         # justify
         selected_modal_features = []
         
         if self.mode in ['explicit', 'implicit']:
-            for i in range(len(mode)):
-                if mode[i] > 0:
+            for i in range(max(mode)+1):
+                if i in mode:
                     selected_modal_features.append(modal_features[i])
             
             x, rec_loss, svd_loss = self.fusion(selected_modal_features, training=training)
             # x, rec_loss, svd_loss = self.mask_modality(selected_modal_features[0], selected_modal_features[1], batch_dict['record_len'])
             return x, rec_loss, svd_loss
 
-        elif self.mode == 'mce':
-            for i in range(len(mode)):
-                if mode[i] > 0:
-                    selected_modal_features.append(modal_features[i])
-                else:
-                    # drop the modality
-                    miss_features = torch.zeros_like(modal_features[i])
-                    selected_modal_features.append(miss_features)
-            x  = self.fusion(selected_modal_features)
-
-            enc_loss = torch.tensor(0.0, requires_grad=True).to(selected_modal_features[0].device)
-            svd_loss = torch.tensor(0.0, requires_grad=True).to(selected_modal_features[0].device)
-            return x, enc_loss, svd_loss
-
-        # CoVQM
-        for i in range(len(mode)):
-            if mode[i] > 0:
+        # Directly fusion
+        for i in range(max(mode)+1):
+            if i in mode:
                 selected_modal_features.append(modal_features[i])
             else:
                 # drop the modality
@@ -204,93 +188,3 @@ class ModalFusionBlock(nn.Module):
         svd_loss = torch.tensor(0.0, requires_grad=True).to(selected_modal_features[0].device)
         # process lidar to get bev
         return self.fusion(torch.cat(selected_modal_features, dim=1)), enc_loss, svd_loss
-
-    def mask_modality(self, x, y, record_len):
-        """
-        x: lidar feature shape (M, C, H, W)
-        y: image feature shape (M, C, H, W)
-        """
-        
-        ego_lidar = x[0:1,]
-        ego_image = y[0:1,]
-
-        # # 1. L + C
-        # if y.shape[0] > 1:
-        #     rec_feature = torch.cat([ego_lidar, y[1:2]], dim=0)
-        # else:
-        #     rec_feature = ego_lidar
-        # return self.fusion([rec_feature], training=False)
-        
-        # # 2. C + L
-        # if x.shape[0] > 1:
-        #     rec_feature = torch.cat([ego_image, x[1:2]], dim=0)
-        # else:
-        #     rec_feature = ego_image
-        # return self.fusion([rec_feature], training=False)
-        
-        # # 3. LC + C
-        # ego_feature, rec_loss, svd_loss = self.fusion([ego_lidar, ego_image], training=False)
-        # agent_features = [ego_feature]
-        # if y.shape[0] > 1:
-        #     nearby_feature, rec_loss2, svd_loss2 = self.fusion([y[1:2]], training=False)
-        #     agent_features.append(nearby_feature)
-        #     rec_loss = rec_loss + rec_loss2
-        #     svd_loss = svd_loss + svd_loss2
-        # return torch.cat(agent_features, dim=0), rec_loss, svd_loss
-
-        # # 4. LC + L
-        # ego_feature, rec_loss, svd_loss = self.fusion([ego_lidar, ego_image], training=False)
-        # agent_features = [ego_feature]
-        # if x.shape[0] > 1:
-        #     nearby_feature, rec_loss2, svd_loss2 = self.fusion([x[1:2]], training=False)
-        #     agent_features.append(nearby_feature)
-        #     rec_loss = rec_loss + rec_loss2
-        #     svd_loss = svd_loss + svd_loss2
-        # return torch.cat(agent_features, dim=0), rec_loss, svd_loss
-
-        # # 5. L + LC
-        # ego_feature, rec_loss, svd_loss = self.fusion([ego_lidar], training=False)
-        # agent_features = [ego_feature]
-        # if x.shape[0] > 1:
-        #     nearby_feature, rec_loss2, svd_loss2 = self.fusion([x[1:2], y[1:2]], training=False)
-        #     agent_features.append(nearby_feature)
-        #     rec_loss = rec_loss + rec_loss2
-        #     svd_loss = svd_loss + svd_loss2
-        # return torch.cat(agent_features, dim=0), rec_loss, svd_loss
-
-        # # 6. C + LC
-        # ego_feature, rec_loss, svd_loss = self.fusion([ego_image], training=False)
-        # agent_features = [ego_feature]
-        # if x.shape[0] > 1:
-        #     nearby_feature, rec_loss2, svd_loss2 = self.fusion([x[1:2], y[1:2]], training=False)
-        #     agent_features.append(nearby_feature)
-        #     rec_loss = rec_loss + rec_loss2
-        #     svd_loss = svd_loss + svd_loss2
-        # return torch.cat(agent_features, dim=0), rec_loss, svd_loss  
-
-
-class MCEBlock(nn.Module):   
-    def __init__(self, dim, modality_num=1):
-        super(MCEBlock, self).__init__()
-        self.positional_encodings = []
-        for i in range(modality_num):
-            self.positional_encodings.append(nn.Parameter(torch.zeros(1, 1, dim)))
-        self.inter = Transformer(dim, mlp_dim=dim*4)
-        self.fusion = nn.Conv2d(dim*modality_num, dim, kernel_size=1)
-
-    def forward(self, modal_features):
-        B, C, H, W = modal_features[0].shape
-        stacked_features = torch.stack(modal_features, dim=1).view(B, len(modal_features), C, -1)
-        # [B, L, M, C]
-        stacked_features = rearrange(stacked_features, 'b m c l -> b l m c')
-        # [1, 1, M, C]
-        stacked_pos = torch.stack(self.positional_encodings, dim=-2).to(stacked_features.device)
-        # justify
-        stacked_features_rec = self.inter(stacked_features, stacked_pos)
-        # [B, L, M, C] -> [B, M, C, H, W]
-        stacked_features_rec = rearrange(stacked_features_rec, 'b l m c -> b m c l')
-        stacked_features_rec = stacked_features_rec.view(B, len(modal_features), C, H, W)
-        concat_features = []
-        for i in range(len(modal_features)):
-            concat_features.append(stacked_features_rec[:, i])
-        return self.fusion(torch.cat(concat_features, dim=1))

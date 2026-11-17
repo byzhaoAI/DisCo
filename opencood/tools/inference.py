@@ -17,7 +17,6 @@ from torch.utils.data import DataLoader
 
 import opencood.hypes_yaml.yaml_utils as yaml_utils
 from opencood.tools import train_utils
-# from opencood.tools import train_utils as train_utils
 from opencood.tools import inference_utils as inference_utils
 from opencood.data_utils.datasets import build_dataset
 from opencood.utils import eval_utils_semantic
@@ -186,47 +185,7 @@ def main():
                 inference_utils.save_prediction_gt(pred_box_tensor, gt_box_tensor, batch_data['ego']['origin_lidar'][0], i, npy_save_path)
 
             # if opt.save_vis_n and opt.save_vis_n >i:
-            if opt.save_vis:
-                """
-                vis_save_path = os.path.join(opt.model_dir, 'vis_lidar')
-                if not os.path.exists(vis_save_path):
-                    os.makedirs(vis_save_path)
-                vis_save_path = os.path.join(opt.model_dir, 'vis_lidar/ori_%05d.png' % i)
-                simple_vis.visualize(None, gt_box_tensor, batch_data['ego']['origin_lidar'][0], hypes['postprocess']['gt_range'],
-                            vis_save_path, method='3d', vis_gt_box=False, vis_pred_box=False, left_hand=False)
-
-                vis_save_path = os.path.join(opt.model_dir, 'vis_image')
-                if not os.path.exists(vis_save_path):
-                    os.makedirs(vis_save_path)
-                image = batch_data['ego']['image_inputs']['ori_imgs'][0][0].cpu().numpy()
-                vis_save_path = os.path.join(opt.model_dir, 'vis_image/camera0_%05d.png' % i)
-                pil_image = Image.fromarray(image.astype(np.uint8))
-                pil_image.save(vis_save_path)
-                
-                
-                vis_save_path = os.path.join(opt.model_dir, 'vis_depth')
-                if not os.path.exists(vis_save_path):
-                    os.makedirs(vis_save_path)
-                vis_save_path = os.path.join(opt.model_dir, 'vis_depth/depth_%05d.png' % i)
-                depth_map = batch_data['ego']['image_inputs']['depth_map'][0][0].cpu().numpy()
-                # 3, 360, 480 / 1, 360, 480
-                print(np.max(depth_map), np.min(depth_map))
-                _max, _min = np.max(depth_map), np.min(depth_map)
-                depth_map = (depth_map - _min) / (_max - _min)
-                depth_mask = (depth_map >= 1).astype(np.float32)
-                depth_map = depth_map[0]
-                H, W = depth_map.shape
-                draw_depth = np.ones((3,H,W))
-                draw_depth[0] = draw_depth[0] * (depth_map*(1-depth_mask)*255+depth_mask*255)
-                draw_depth[1] = draw_depth[1] * (depth_map*(1-depth_mask)*140+depth_mask*255)
-                draw_depth[2] = draw_depth[2] * (depth_map*(1-depth_mask)*0+depth_mask*255)
-                draw_depth = draw_depth.transpose(1,2,0)
-
-                draw_depth[draw_depth==0] = 255
-                pil_depth = Image.fromarray(draw_depth.astype(np.uint8))
-                pil_depth.save(vis_save_path)
-                """
-                
+            if opt.save_vis:                
                 vis_save_path = os.path.join(opt.model_dir, 'vis_3d')
                 if not os.path.exists(vis_save_path):
                     os.makedirs(vis_save_path)

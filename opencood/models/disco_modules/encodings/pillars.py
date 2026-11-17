@@ -11,9 +11,9 @@ from opencood.models.common_modules.point_pillar_scatter import PointPillarScatt
 class Pillars(nn.Module):   
     def __init__(self, args, device):
         super(Pillars, self).__init__()
-        # lidar 分支网络
-        #（1）PillarVFE              pcdet/models/backbones_3d/vfe/pillar_vfe.py   # 3D卷积, 点特征编码
-        #（2）PointPillarScatter     pcdet/models/backbones_2d/map_to_bev/pointpillar_scatter.py   # 2D卷积，创建（实际就是变形）一个大小为(C，H，W)的伪图像
+        # lidar branch
+        #（1）PillarVFE              pcdet/models/backbones_3d/vfe/pillar_vfe.py   # 3D conv, point feature encoding
+        #（2）PointPillarScatter     pcdet/models/backbones_2d/map_to_bev/pointpillar_scatter.py   # 2D conv，create a pesudo (C，H，W) image
         cav_lidar_range = args['lidar_range']
         voxel_size = args['voxel_size']
         grid_size = (np.array(cav_lidar_range[3:6]) - np.array(cav_lidar_range[0:3])) / np.array(voxel_size)

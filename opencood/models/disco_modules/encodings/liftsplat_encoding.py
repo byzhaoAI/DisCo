@@ -12,12 +12,12 @@ class Up(nn.Module):
         super().__init__()
 
         self.up = nn.Upsample(scale_factor=scale_factor, mode='bilinear',
-                              align_corners=True)  # 上采样 BxCxHxW->BxCx2Hx2W
+                              align_corners=True)
 
         self.conv = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, bias=False),
             nn.BatchNorm2d(out_channels),
-            #nn.ReLU(inplace=True),  # inplace=True使用原地操作，节省内存
+            #nn.ReLU(inplace=True),
             #nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1, bias=False),
             #nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True)
@@ -36,12 +36,12 @@ class Up(nn.Module):
         x = torch.cat([x2, x1], dim=1)
         return self.conv(x)
 
-        #x1 = self.up(x1)  # 对x1进行上采样
-        #x1 = torch.cat([x2, x1], dim=1)  # 将x1和x2 concat 在一起
+        #x1 = self.up(x1)
+        #x1 = torch.cat([x2, x1], dim=1)
         #return self.conv(x1)
 
 
-class ImgCamEncode(nn.Module):  # 提取图像特征进行图像编码
+class ImgCamEncode(nn.Module):
     def __init__(self, D, C, downsample, ddiscr, mode, use_gt_depth=False, depth_supervision=False):
         super(ImgCamEncode, self).__init__()
         self.D = D  # 42
@@ -55,10 +55,10 @@ class ImgCamEncode(nn.Module):  # 提取图像特征进行图像编码
         self.depth_supervision = depth_supervision # in the case of not use gt depth
         self.chain_channels = 128 # 256 # 512
 
-        self.trunk = EfficientNet.from_pretrained("efficientnet-b0")  # 使用 efficientnet 提取特征
+        self.trunk = EfficientNet.from_pretrained("efficientnet-b0")
         print("Number of parameter EfficientNet: %d" % (sum([param.nelement() for param in self.trunk.parameters()])))
 
-        self.up1 = Up(320+112, self.chain_channels)  # 上采样模块，输入输出通道分别为320+112和512
+        self.up1 = Up(320+112, self.chain_channels)
         if downsample <= 8:
             self.up2 = Up(self.chain_channels+40, self.chain_channels)
         if downsample <= 4:
@@ -70,10 +70,10 @@ class ImgCamEncode(nn.Module):  # 提取图像特征进行图像编码
 
 
         if not use_gt_depth:
-            self.depth_head = nn.Conv2d(self.chain_channels, self.D, kernel_size=1, padding=0)  # 1x1卷积，变换维度
+            self.depth_head = nn.Conv2d(self.chain_channels, self.D, kernel_size=1, padding=0)
         self.image_head = nn.Conv2d(self.chain_channels, self.C, kernel_size=1, padding=0)
 
-    def get_eff_features(self, x):  # 使用efficientnet提取特征
+    def get_eff_features(self, x):
         # adapted from https://github.com/lukemelas/EfficientNet-PyTorch/blob/master/efficientnet_pytorch/model.py#L231
         endpoints = dict()
 
@@ -93,7 +93,7 @@ class ImgCamEncode(nn.Module):  # 提取图像特征进行图像编码
 
         # Head
         endpoints['reduction_{}'.format(len(endpoints)+1)] = x  # x: 24 x 320 x 4 x 11
-        x = self.up1(endpoints['reduction_5'], endpoints['reduction_4'])  # 先对endpoints[4]进行上采样，然后将 endpoints[5]和endpoints[4] concat 在一起
+        x = self.up1(endpoints['reduction_5'], endpoints['reduction_4'])
         if self.downsample <= 8:
             x = self.up2(x, endpoints['reduction_3'])
         if self.downsample <= 4:
@@ -119,7 +119,7 @@ class ImgCamEncode(nn.Module):  # 提取图像特征进行图像编码
         x_img = self.image_head(features) #  8x downscale feature: B*N x C x fH x fW(24 x 64 x 8 x 22). C is the channel for next stage (i.e. bev)
 
         depth_score = self.depth_head(features)
-        depth_pred = F.softmax(depth_score, dim=1) # 对深度维进行softmax，得到每个像素不同深度的概率
+        depth_pred = F.softmax(depth_score, dim=1)
 
         # size: final_depth=[B*num(cav), D, H, W]; x_img=[B*num(cav), C, H, W]
         new_x = depth_pred.unsqueeze(1) * x_img.unsqueeze(2) # new_x: 24 x 64 x 41 x 8 x 18

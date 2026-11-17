@@ -147,7 +147,7 @@ model:
           point_pillar_scatter:
             num_features: 64
 
-        origin_hypes: 'opencood/hypes_yaml/disco/dair-v2x/single/dair_single_pillar.yaml'
+        origin_hypes: 'opencood/hypes_yaml/dair-v2x/single/dair_single_pillar.yaml'
         model_path: 'opencood/logs/dair_single_pillar_2024_10_13_02_25_12'
 
       a2:
